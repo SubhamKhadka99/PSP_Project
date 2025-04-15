@@ -152,4 +152,4 @@ def update_student_profile(username, full_name):
         return updated
     except Exception as e:
         print(f"Error: {e}")
-        return False
+        return False 
