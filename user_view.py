@@ -90,6 +90,9 @@ def admin_dashboard(user):
         tk.Button(delete_user_window, text="Submit",
                   command=submit).pack(pady=10)
 
+    def logout():
+        admin_window.destroy()  # Close the admin dashboard
+
     admin_window = tk.Toplevel()
     admin_window.title("Admin Dashboard")
     admin_window.geometry("400x300")
@@ -100,6 +103,7 @@ def admin_dashboard(user):
     tk.Button(admin_window, text="Add User", command=add_user_ui).pack(pady=10)
     tk.Button(admin_window, text="Delete User",
               command=delete_user_ui).pack(pady=10)
+    tk.Button(admin_window, text="Logout", command=logout).pack(pady=10)
 
 
 def student_dashboard(user):
@@ -162,6 +166,9 @@ def student_dashboard(user):
 
         tk.Button(update_window, text="Submit", command=submit).pack(pady=10)
 
+    def logout():
+        student_window.destroy()  # Close the student dashboard
+
     student_window = tk.Toplevel()
     student_window.title("Student Dashboard")
     student_window.geometry("400x300")
@@ -173,6 +180,7 @@ def student_dashboard(user):
               command=view_details).pack(pady=10)
     tk.Button(student_window, text="Update Profile",
               command=update_profile).pack(pady=10)
+    tk.Button(student_window, text="Logout", command=logout).pack(pady=10)
 
 
 def main():
