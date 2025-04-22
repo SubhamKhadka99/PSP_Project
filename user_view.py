@@ -209,6 +209,106 @@ def main():
 
     root.mainloop()
 
+import tkinter as tk
+from tkinter import messagebox
+from auth import authenticate, get_user_details, add_user, delete_user, get_student_grades, get_student_eca, update_student_profile
+
+
+def forgot_password():
+    """
+    Functionality for resetting a forgotten password.
+    """
+    def submit_reset():
+        username = username_entry.get()
+        new_password = new_password_entry.get()
+
+        # Check if the username exists in passwords.txt
+        try:
+            with open("data/passwords.txt", "r") as file:
+                lines = file.readlines()
+
+            updated = False
+            with open("data/passwords.txt", "w") as file:
+                for line in lines:
+                    stored_username, stored_password, role = line.strip().split(",")
+                    if username == stored_username:
+                        file.write(f"{username},{new_password},{role}\n")
+                        updated = True
+                    else:
+                        file.write(line)
+
+            if updated:
+                messagebox.showinfo("Success", "Password reset successfully!")
+                reset_window.destroy()
+            else:
+                messagebox.showerror("Error", "Username not found.")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {e}")
+
+    # Create a new window for password reset
+    reset_window = tk.Toplevel()
+    reset_window.title("Forgot Password")
+    reset_window.geometry("300x200")
+
+    tk.Label(reset_window, text="Enter your username:").pack(pady=5)
+    username_entry = tk.Entry(reset_window)
+    username_entry.pack(pady=5)
+
+    tk.Label(reset_window, text="Enter new password:").pack(pady=5)
+    new_password_entry = tk.Entry(reset_window, show="*")
+    new_password_entry.pack(pady=5)
+
+    tk.Button(reset_window, text="Submit", command=submit_reset).pack(pady=10)
+
+
+def login():
+    username = username_entry.get()
+    password = password_entry.get()
+
+    # Authenticate the user
+    role = authenticate(username, password)
+    if role:
+        user = get_user_details(username)
+        if user:
+            messagebox.showinfo("Login Successful",
+                                f"Welcome, {user.full_name} ({user.role})!")
+            if role == "admin":
+                admin_dashboard(user)
+            elif role == "student":
+                student_dashboard(user)
+    else:
+        messagebox.showerror("Login Failed", "Invalid username or password")
+
+
+def main():
+    root = tk.Tk()
+    root.title("Login System")
+    root.geometry("900x700")
+
+    # Create a frame to center the elements
+    frame = tk.Frame(root)
+    frame.pack(expand=True)
+
+    # Username label and entry
+    tk.Label(frame, text="Username:").pack(pady=5)
+    global username_entry
+    username_entry = tk.Entry(frame)
+    username_entry.pack(pady=5)
+
+    # Password label and entry
+    tk.Label(frame, text="Password:").pack(pady=5)
+    global password_entry
+    password_entry = tk.Entry(frame, show="*")
+    password_entry.pack(pady=5)
+
+    # Login button
+    tk.Button(frame, text="Login", command=login).pack(pady=10)
+
+    # Forgot Password button
+    tk.Button(frame, text="Forgot Password?", command=forgot_password).pack(pady=5)
+
+    root.mainloop()
+
 
 if __name__ == "__main__":
     main()
